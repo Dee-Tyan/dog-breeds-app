@@ -1,32 +1,34 @@
 <template>
   <div>
-    <h1>{{ dogName }}</h1>
+
+    <div v-if="loading" class="text-base font-bold px-4">Loading Image...</div>
+    <div v-else class="px-4 my-8">
     <img :src="dogImage" />
+     <h1 class="text-4xl font-bold">{{dogName.toUpperCase()}}</h1>
+    </div>
   </div>
+
+  <router-link to="/" class="text-sm font-bold ml-4"> Back to Home</router-link>
 </template>
 
 <script>
 import axios from 'axios';
 
 export default {
-  props: {
-    images: {
-      type: Array,
-      required: true,
-    },
-  },
   data() {
     return {
-      dogName: '',
+      dogName: "",
       dogImage: '',
+      loading: true,
     };
   },
   created() {
-    const index = this.$route.params.index;
-    axios.get(`https://dog.ceo/api/breed/${this.images[index]}/images/random`)
+    const breed = this.$route.params.breed;
+    axios.get(`https://dog.ceo/api/breed/${breed}/images/random`)
       .then(response => {
-        this.dogName = this.images[index];
+        this.dogName = breed;
         this.dogImage = response.data.message;
+        this.loading = false;
       })
       .catch(error => {
         console.error(error);
